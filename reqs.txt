@@ -1,0 +1,6 @@
+# Required for all
+wheel
+
+flask==1.1.2
+sqlalchemy==1.3.18
+
