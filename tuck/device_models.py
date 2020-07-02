@@ -21,6 +21,13 @@ class DeviceClass(Base, ModelBase):
     def __repr__(self):
         return f"<DeviceClass {self.name}>"
 
+    def serialize(self):
+        rv = super(DeviceClass, self).serialize()
+        rv["name"] = self.name
+        rv["desc"] = self.desc
+
+        return rv
+
 
 class Device(Base, ModelBase):
     __tablename__ = "device"
@@ -37,3 +44,11 @@ class Device(Base, ModelBase):
 
     def __repr__(self):
         return f"<Device {self.mac}>"
+
+    def serialize(self):
+        rv = super(Device, self).serialize()
+        rv["desc"] = self.desc
+        rv["mac"] = self.mac
+        rv["device_class"] = self.device_class_id
+
+        return rv

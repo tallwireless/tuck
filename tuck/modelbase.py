@@ -34,3 +34,15 @@ class ModelBase(object):
     def delete(self):
         db_session.delete(self)
         db_session.commit()
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "createdBy": self.createdBy,
+            "created": arrow.get(self.created).strftime("%Y/%d/%m %H:%M UTC"),
+            "updatedBy": self.updatedBy,
+            "updated": arrow.get(self.updated).strftime("%Y/%d/%m %H:%M UTC"),
+        }
+
+    def deserialize(self, data):
+        pass
