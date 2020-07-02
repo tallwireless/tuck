@@ -15,8 +15,8 @@ def init_db():
     # they will be registered properly on the metadata.  Otherwise
     # you will have to import them first before calling init_db()
     import tuck.user_models  # noqa: F401
+    import tuck.device_models  # noqa: F401
+    import tuck.ipam_models  # noqa: F401
 
-    #    import tucker.device_models
-    #    import tucker.ipam_models
     #    import tucker.dns_models
     Base.metadata.create_all(bind=engine)
