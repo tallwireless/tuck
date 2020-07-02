@@ -9,6 +9,8 @@ from flask import request
 from flask import session
 from flask import url_for
 
+from tuck.user_models import User
+
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
@@ -34,7 +36,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = {"username": user_id}
+        g.user = User.query.filter(User.username == user_id).first()
 
 
 @bp.route("/login", methods=("GET", "POST"))
@@ -43,17 +45,15 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        error = None
 
-        if username != "dev" and password != "dev":
-            error = "Incorrect username or password"
+        user = User.query.filter(User.username == username).first()
 
-        if error is None:
+        if user is not None and user.checkPassword(password):
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = username
             return redirect(url_for("index"))
-        flash(error)
+        flash("Invalid username or password")
     return render_template("auth/login.html")
 
 
