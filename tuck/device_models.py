@@ -38,16 +38,11 @@ class DeviceClass(Base, ModelBase):
 
         return rv
 
-    def update(self, data):
-        # assume the keys are sanitized
-        for (key, value) in data.items():
-            self.__setattr__(key, value)
-
 
 class Device(Base, ModelBase):
     __tablename__ = "device"
     id = Column(Integer, primary_key=True)
-    mac = Column(String(18), nullable=False)
+    mac = Column(String(18), nullable=False, unique=True)
     desc = Column(String(255), nullable=False)
     device_class_id = Column(Integer, ForeignKey("device_class.id"), nullable=False)
     device_class = relationship("DeviceClass", back_populates="devices")
@@ -64,7 +59,10 @@ class Device(Base, ModelBase):
         return f"<Device {self.mac}>"
 
     def checkFields(fields):
-        return ModelBase.checkFields(DeviceClass, fields)
+        return ModelBase.checkFields(Device, fields)
+
+    def checkUnknownFields(fields):
+        return ModelBase.checkUnknownFields(Device, fields)
 
     def serialize(self):
         rv = super(Device, self).serialize()

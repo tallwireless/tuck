@@ -28,7 +28,7 @@ def register_api(view, endpoint, url, pk="id", pk_type="int"):
 
 
 register_api(DeviceClassView, "device_class_api", "/api/device_class/", pk="id")
-register_api(DeviceView, "device_api", "/api/device/", pk="id")
+register_api(DeviceView, "device_api", "/api/device/", pk="mac")
 
 
 @app.teardown_appcontext

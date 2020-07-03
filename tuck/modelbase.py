@@ -16,6 +16,7 @@ class ModelBase(object):
         pass
 
     def save(self, who=None):
+        print(type(self))
         if self._sa_instance_state.modified:
             if who is None:
                 who = g.user.username
@@ -57,5 +58,7 @@ class ModelBase(object):
 
         return False
 
-    def deserialize(self, data):
-        pass
+    def update(self, data):
+        # assume the keys are sanitized
+        for (key, value) in data.items():
+            self.__setattr__(key, value)
