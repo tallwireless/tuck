@@ -7,10 +7,14 @@ import hashlib
 
 class User(Base, ModelBase):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True)
     password = Column(String(120))
     name = Column(String(120))
+
+    required = ["username", "password"]
+    optional = ["name"]
 
     def __init__(self, username, password):
         self.username = username

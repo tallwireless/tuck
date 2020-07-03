@@ -8,10 +8,13 @@ from tuck.modelbase import ModelBase
 class DeviceClass(Base, ModelBase):
     __tablename__ = "device_class"
     id = Column(Integer, primary_key=True)
-    name = Column(String(120))
+    name = Column(String(120), unique=True)
     vlan_id = Column(Integer, nullable=False)
     desc = Column(String(255))
     devices = relationship("Device", back_populates="device_class")
+
+    required = ["vlan_id", "name"]
+    optional = ["desc"]
 
     def __init__(self, name, vlan_id, desc=None):
         self.name = name
@@ -21,12 +24,24 @@ class DeviceClass(Base, ModelBase):
     def __repr__(self):
         return f"<DeviceClass {self.name}>"
 
+    def checkFields(fields):
+        return ModelBase.checkFields(DeviceClass, fields)
+
+    def checkUnknownFields(fields):
+        return ModelBase.checkUnknownFields(DeviceClass, fields)
+
     def serialize(self):
         rv = super(DeviceClass, self).serialize()
         rv["name"] = self.name
         rv["desc"] = self.desc
+        rv["vlan_id"] = self.vlan_id
 
         return rv
+
+    def update(self, data):
+        # assume the keys are sanitized
+        for (key, value) in data.items():
+            self.__setattr__(key, value)
 
 
 class Device(Base, ModelBase):
@@ -37,6 +52,9 @@ class Device(Base, ModelBase):
     device_class_id = Column(Integer, ForeignKey("device_class.id"), nullable=False)
     device_class = relationship("DeviceClass", back_populates="devices")
 
+    required = ["mac", "desc", "device_class_id"]
+    optional = []
+
     def __init__(self, mac, desc, device_class):
         self.mac = mac
         self.desc = desc
@@ -44,6 +62,9 @@ class Device(Base, ModelBase):
 
     def __repr__(self):
         return f"<Device {self.mac}>"
+
+    def checkFields(fields):
+        return ModelBase.checkFields(DeviceClass, fields)
 
     def serialize(self):
         rv = super(Device, self).serialize()

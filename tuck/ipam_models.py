@@ -7,7 +7,10 @@ from tuck.modelbase import ModelBase
 class VLAN(Base, ModelBase):
     __tablename__ = "vlan"
     id = Column(Integer, primary_key=True)
-    name = Column(String(120))
+    name = Column(String(120), nullable=False)
+
+    required = ["id", "name"]
+    optional = []
 
     def __init__(self, vlan_id, name=None):
         self.id = vlan_id

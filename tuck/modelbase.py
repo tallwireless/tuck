@@ -44,5 +44,18 @@ class ModelBase(object):
             "updated": arrow.get(self.updated).strftime("%Y/%d/%m %H:%M UTC"),
         }
 
+    def checkFields(self, fields):
+        for req in self.required:
+            if req not in fields:
+                return {"message": f"Missing required field: {req}"}
+
+    def checkUnknownFields(self, fields):
+        all_fields = self.required + self.optional
+        for req in fields:
+            if req not in all_fields:
+                return {"message": f"Unknown Field: {req}"}
+
+        return False
+
     def deserialize(self, data):
         pass
